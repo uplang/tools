@@ -1,0 +1,74 @@
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+    - go test ./...
+
+builds:
+  - id: up-language-server
+    main: ./main.go
+    binary: up-language-server
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+
+archives:
+  - id: up-language-server
+    format: tar.gz
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- .Version }}_
+      {{- .Os }}_
+      {{- .Arch }}
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - LICENSE
+      - README.md
+
+checksum:
+  name_template: 'checksums.txt'
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^ci:'
+      - Merge pull request
+      - Merge branch
+
+release:
+  github:
+    owner: uplang
+    name: lsp
+  draft: false
+  prerelease: auto
+
+brews:
+  - repository:
+      owner: uplang
+      name: homebrew-tap
+    folder: Formula
+    homepage: https://uplang.org
+    description: Language Server Protocol implementation for UP
+    license: GPL-3.0
+    test: |
+      system "#{bin}/up-language-server --version"
+    install: |
+      bin.install "up-language-server"
+
