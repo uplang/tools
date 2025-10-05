@@ -5,7 +5,7 @@ go 1.25
 toolchain go1.25.1
 
 require (
-	github.com/uplang/go v0.0.0-20251005231728-1509f06636bc
+	github.com/uplang/go v0.0.1
 	github.com/urfave/cli/v2 v2.27.7
 )
 
