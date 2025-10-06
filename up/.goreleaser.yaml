@@ -38,7 +38,7 @@ archives:
       - README.md
 
 checksum:
-  name_template: 'checksums.txt'
+  name_template: 'checksums-up.txt'
 
 changelog:
   sort: asc
@@ -56,7 +56,7 @@ release:
     name: tools
   draft: false
   prerelease: auto
-  name_template: "{{.ProjectName}}/up v{{.Version}}"
+  name_template: "Tool: up v{{.Version}}"
 
 homebrew_casks:
   - name: up
