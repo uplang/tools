@@ -283,7 +283,7 @@ func (s *Server) getCompletions(doc *Document, pos protocol.Position) []protocol
 func (s *Server) getHover(doc *Document, pos protocol.Position) *protocol.Hover {
 	return &protocol.Hover{
 		Contents: protocol.MarkupContent{
-			Kind:  protocol.MarkupKindMarkdown,
+			Kind:  protocol.Markdown,
 			Value: "**UP Document**\n\nHover information for UP files.",
 		},
 	}
