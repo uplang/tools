@@ -2,6 +2,10 @@ module github.com/uplang/tools/up
 
 go 1.25.1
 
+tool github.com/goreleaser/goreleaser/v2
+
+tool github.com/golangci/golangci-lint/cmd/golangci-lint
+
 require (
 	github.com/uplang/go v0.0.1
 	github.com/urfave/cli/v2 v2.27.7
@@ -496,9 +500,4 @@ require (
 	sigs.k8s.io/kind v0.27.0 // indirect
 	sigs.k8s.io/yaml v1.6.0 // indirect
 	software.sslmate.com/src/go-pkcs12 v0.5.0 // indirect
-)
-
-tool (
-	github.com/golangci/golangci-lint/cmd/golangci-lint
-	github.com/goreleaser/goreleaser/v2
 )
