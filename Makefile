@@ -66,12 +66,4 @@ bump-minor-version: ## Bump minor version (e.g., v0.0.1 -> v0.1.0) and create ta
 	git tag -a $$NEW_VERSION -m "Release version $$NEW_VERSION"
 	@echo "Tag created. Push with: git push origin $$(git describe --tags --abbrev=0)"
 
-.PHONY: bump-major-version
-bump-major-version: ## Bump major version (e.g., v0.0.1 -> v1.0.0) and create tag locally
-	@echo "Current version: $$(git describe --tags --abbrev=0 2>/dev/null || echo 'No tags found')"
-	@NEW_VERSION=$$(go tool svu major); \
-	echo "Creating new major version: $$NEW_VERSION"; \
-	git tag -a $$NEW_VERSION -m "Release version $$NEW_VERSION"
-	@echo "Tag created. Push with: git push origin $$(git describe --tags --abbrev=0)"
-
 .DEFAULT_GOAL := build
