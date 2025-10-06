@@ -1,6 +1,7 @@
 # Makefile for UP Tools Repository
 
-TOOLS := up examples language-server repl
+# Find all tool directories with go.mod
+TOOLS := $(patsubst %/,%,$(dir $(wildcard */go.mod)))
 
 .PHONY: help
 help: ## Show this help message
@@ -8,42 +9,32 @@ help: ## Show this help message
 	@echo ''
 	@echo 'Available targets:'
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  %-15s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+	@echo ''
+	@echo 'Tool targets (generated):'
+	@printf "  %-15s %s\n" "test" "Run tests for all tools"
+	@printf "  %-15s %s\n" "build" "Build all tools"
+	@printf "  %-15s %s\n" "clean" "Clean all tools"
+	@printf "  %-15s %s\n" "install" "Install all tools"
 
-.PHONY: test
-test: ## Run tests for all tools
-	@for tool in $(TOOLS); do \
-		if [ -d $$tool ] && [ -f $$tool/go.mod ]; then \
-			echo "Testing $$tool..."; \
-			$(MAKE) -C $$tool test || exit 1; \
-		fi \
-	done
+# Template for creating tool targets
+# Usage: $(eval $(call TOOL_TARGET,target-name,dependencies))
+# Creates both 'target' and 'target-<tool>' phony targets
+define TOOL_TARGET
+$(1)_TOOLS := $$(patsubst %,$(1)-%,$$(TOOLS))
 
-.PHONY: build
-build: test ## Build all tools
-	@for tool in $(TOOLS); do \
-		if [ -d $$tool ] && [ -f $$tool/go.mod ]; then \
-			echo "Building $$tool..."; \
-			$(MAKE) -C $$tool build || exit 1; \
-		fi \
-	done
+.PHONY: $(1)
+$(1): $(2) $$($(1)_TOOLS)
 
-.PHONY: clean
-clean: ## Clean all tools
-	@for tool in $(TOOLS); do \
-		if [ -d $$tool ] && [ -f $$tool/go.mod ]; then \
-			echo "Cleaning $$tool..."; \
-			$(MAKE) -C $$tool clean || exit 1; \
-		fi \
-	done
+.PHONY: $$($(1)_TOOLS)
+$$($(1)_TOOLS):
+	$$(MAKE) -C $$(patsubst $(1)-%,%,$$@) $(1)
+endef
 
-.PHONY: install
-install: build ## Install all tools
-	@for tool in $(TOOLS); do \
-		if [ -d $$tool ] && [ -f $$tool/go.mod ]; then \
-			echo "Installing $$tool..."; \
-			$(MAKE) -C $$tool install || exit 1; \
-		fi \
-	done
+# Generate targets for each tool operation
+$(eval $(call TOOL_TARGET,test))
+$(eval $(call TOOL_TARGET,build,test))
+$(eval $(call TOOL_TARGET,clean))
+$(eval $(call TOOL_TARGET,install,build))
 
 .PHONY: test-ci
 test-ci: ## Run CI tests locally using act (requires: brew install act)
@@ -52,18 +43,17 @@ test-ci: ## Run CI tests locally using act (requires: brew install act)
 
 .PHONY: bump-patch-version
 bump-patch-version: ## Bump patch version (e.g., v0.0.1 -> v0.0.2) and create tag locally
-	@echo "Current version: $$(git describe --tags --abbrev=0 2>/dev/null || echo 'No tags found')"
-	@NEW_VERSION=$$(go tool svu patch); \
-	echo "Creating new patch version: $$NEW_VERSION"; \
-	git tag -a $$NEW_VERSION -m "Release version $$NEW_VERSION"
-	@echo "Tag created. Push with: git push origin $$(git describe --tags --abbrev=0)"
+	@$(MAKE) tag NEW_VERSION=$(shell go tool svu patch)
 
 .PHONY: bump-minor-version
 bump-minor-version: ## Bump minor version (e.g., v0.0.1 -> v0.1.0) and create tag locally
-	@echo "Current version: $$(git describe --tags --abbrev=0 2>/dev/null || echo 'No tags found')"
-	@NEW_VERSION=$$(go tool svu minor); \
-	echo "Creating new minor version: $$NEW_VERSION"; \
-	git tag -a $$NEW_VERSION -m "Release version $$NEW_VERSION"
-	@echo "Tag created. Push with: git push origin $$(git describe --tags --abbrev=0)"
+	@$(MAKE) tag NEW_VERSION=$(shell go tool svu minor)
+
+.PHONY: tag
+tag: NEW_VERSION ?= $(shell go tool svu patch)
+tag:
+	@echo "Creating tag: $(NEW_VERSION)"
+	git tag -a $(NEW_VERSION) -m "Release version $(NEW_VERSION)"
+	@echo "Tag created. Push with: git push origin $(NEW_VERSION)"
 
 .DEFAULT_GOAL := build
