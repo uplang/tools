@@ -1,6 +1,16 @@
 # UP Tools
 
+[![CI](https://github.com/uplang/tools/actions/workflows/ci.yml/badge.svg)](https://github.com/uplang/tools/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/uplang/tools)](https://goreportcard.com/report/github.com/uplang/tools)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 Collection of tools and utilities for working with UP (Unified Properties).
+
+**Quick Links:**
+- 📦 [Install](#installation)
+- 📖 [Documentation](#main-command-up)
+- 🔧 [Development](#development)
+- 🔗 [Go Packages](https://pkg.go.dev/github.com/uplang/tools)
 
 Follows the Go command pattern: a single `up` command with subcommands and tool dispatch.
 
