@@ -44,6 +44,7 @@ jobs:
 
   release-examples:
     name: Release Examples Tool
+    needs: release-up
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -73,6 +74,7 @@ jobs:
 
   release-language-server:
     name: Release Language Server
+    needs: release-examples
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -102,6 +104,7 @@ jobs:
 
   release-repl:
     name: Release REPL
+    needs: release-language-server
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
