@@ -26,7 +26,6 @@ builds:
 
 archives:
   - id: up-language-server
-    format: tar.gz
     name_template: >-
       {{ .ProjectName }}_
       {{- .Version }}_
@@ -34,7 +33,7 @@ archives:
       {{- .Arch }}
     format_overrides:
       - goos: windows
-        format: zip
+        formats: [zip]
     files:
       - LICENSE
       - README.md
@@ -59,16 +58,12 @@ release:
   draft: false
   prerelease: auto
 
-brews:
+homebrew_casks:
   - repository:
       owner: uplang
       name: homebrew-tap
-    folder: Formula
+    directory: Casks
     homepage: https://uplang.org
     description: Language Server Protocol implementation for UP
     license: GPL-3.0
-    test: |
-      system "#{bin}/up-language-server --version"
-    install: |
-      bin.install "up-language-server"
 

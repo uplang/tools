@@ -58,13 +58,13 @@ release:
   prerelease: auto
   name_template: "{{.ProjectName}}/up v{{.Version}}"
 
-brews:
+homebrew_casks:
   - name: up
     repository:
       owner: uplang
       name: brew
       token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
-    directory: Formula
+    directory: Casks
     homepage: https://github.com/uplang/tools
     description: "UP (Unified Properties) CLI tool - parse, format, validate, and work with UP documents"
     license: GPL-3.0
@@ -73,14 +73,6 @@ brews:
       name: goreleaserbot
       email: bot@goreleaser.com
     commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
-    dependencies:
-      - name: go
-        type: optional
-    test: |
-      system "#{bin}/up", "version"
-      system "#{bin}/up", "parse", "--help"
-    install: |
-      bin.install "up"
     caveats: |
       UP CLI has been installed!
 
