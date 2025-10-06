@@ -59,7 +59,6 @@ release:
   draft: false
   prerelease: auto
   mode: keep-existing
-  name_template: "Tool: examples v{{.Version}}"
 
 brews:
   - name: up-examples
