@@ -14,6 +14,17 @@ import (
 	up "github.com/uplang/go"
 )
 
+var (
+	// version is set at build time via ldflags
+	version = "dev"
+	// commit is set at build time via ldflags
+	commit = "none"
+	// date is set at build time via ldflags
+	date = "unknown"
+	// builtBy is set at build time via ldflags
+	builtBy = "unknown"
+)
+
 // App provides the CLI application functionality.
 type App struct {
 	parser   *up.Parser
@@ -45,8 +56,9 @@ func DefaultApp() *App {
 // Run executes the CLI application.
 func (a *App) Run(args []string) error {
 	app := &cli.App{
-		Name:  "up",
-		Usage: "UP is a tool for managing UP (Unified Properties) documents",
+		Name:    "up",
+		Usage:   "UP is a tool for managing UP (Unified Properties) documents",
+		Version: version,
 		UsageText: `up <command> [arguments]
 
 The commands are:
@@ -71,6 +83,7 @@ Use "up <command> -h" for more information about a command.`,
 			a.lspCommand(),
 			a.replCommand(),
 			a.toolCommand(),
+			a.versionCommand(),
 		},
 		Before: func(c *cli.Context) error {
 			return nil
@@ -258,6 +271,26 @@ func (a *App) toolCommand() *cli.Command {
 		Usage:     "Run specified UP tool",
 		UsageText: "up tool <name> [arguments]",
 		Action:    a.handleTool,
+	}
+}
+
+// versionCommand creates the version command.
+func (a *App) versionCommand() *cli.Command {
+	return &cli.Command{
+		Name:  "version",
+		Usage: "Print version information",
+		Flags: []cli.Flag{
+			&cli.BoolFlag{
+				Name:    "short",
+				Aliases: []string{"s"},
+				Usage:   "Print only the version number",
+			},
+			&cli.BoolFlag{
+				Name:  "json",
+				Usage: "Print version information as JSON",
+			},
+		},
+		Action: a.handleVersion,
 	}
 }
 
@@ -554,6 +587,35 @@ func (a *App) handleTool(c *cli.Context) error {
 	toolArgs := c.Args().Tail()
 
 	return execTool("up-"+toolName, toolArgs)
+}
+
+// handleVersion prints version information.
+func (a *App) handleVersion(c *cli.Context) error {
+	if c.Bool("short") {
+		fmt.Fprintf(a.output, "%s\n", version)
+		return nil
+	}
+
+	if c.Bool("json") {
+		versionInfo := map[string]string{
+			"version": version,
+			"commit":  commit,
+			"date":    date,
+			"builtBy": builtBy,
+		}
+		data, err := json.MarshalIndent(versionInfo, "", "  ")
+		if err != nil {
+			return err
+		}
+		fmt.Fprintf(a.output, "%s\n", data)
+		return nil
+	}
+
+	fmt.Fprintf(a.output, "up version %s\n", version)
+	fmt.Fprintf(a.output, "  commit:  %s\n", commit)
+	fmt.Fprintf(a.output, "  date:    %s\n", date)
+	fmt.Fprintf(a.output, "  built by: %s\n", builtBy)
+	return nil
 }
 
 // execTool executes an external tool binary.

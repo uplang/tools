@@ -1,5 +1,7 @@
 version: 2
 
+project_name: up
+
 before:
   hooks:
     - go mod tidy
@@ -23,20 +25,16 @@ builds:
       - -X main.version={{.Version}}
       - -X main.commit={{.Commit}}
       - -X main.date={{.Date}}
+      - -X main.builtBy=goreleaser
 
 archives:
   - id: up
-    format: tar.gz
     name_template: >-
       {{ .ProjectName }}_
       {{- .Version }}_
       {{- .Os }}_
       {{- .Arch }}
-    format_overrides:
-      - goos: windows
-        format: zip
     files:
-      - LICENSE
       - README.md
 
 checksum:
@@ -61,15 +59,34 @@ release:
   name_template: "{{.ProjectName}}/up v{{.Version}}"
 
 brews:
-  - repository:
+  - name: up
+    repository:
       owner: uplang
-      name: homebrew-tap
-    folder: Formula
-    homepage: https://uplang.org
-    description: UP (Unified Properties) CLI tool
+      name: brew
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    directory: Formula
+    homepage: https://github.com/uplang/tools
+    description: "UP (Unified Properties) CLI tool - parse, format, validate, and work with UP documents"
     license: GPL-3.0
+    skip_upload: auto
+    commit_author:
+      name: goreleaserbot
+      email: bot@goreleaser.com
+    commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
+    dependencies:
+      - name: go
+        type: optional
     test: |
-      system "#{bin}/up --version"
+      system "#{bin}/up", "version"
+      system "#{bin}/up", "parse", "--help"
     install: |
       bin.install "up"
+    caveats: |
+      UP CLI has been installed!
 
+      Documentation: https://github.com/uplang/tools/tree/main/up
+
+      Common commands:
+        up parse -i config.up --pretty
+        up format -i config.up
+        up validate -i config.up

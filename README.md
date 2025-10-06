@@ -16,15 +16,41 @@ Follows the Go command pattern: a single `up` command with subcommands and tool 
 
 ## Installation
 
+### Via Homebrew (Recommended for macOS/Linux)
+
+```bash
+# Add the uplang brew tap
+brew tap uplang/brew
+
+# Install the UP CLI
+brew install uplang/brew/up
+
+# Or in one command
+brew install uplang/brew/up
+```
+
+📖 See [HOMEBREW.md](HOMEBREW.md) for detailed Homebrew installation guide and troubleshooting.
+
+### Via Go Install
+
 ```bash
 # Install main UP CLI (includes built-in commands)
 go install github.com/uplang/tools/up@latest
 
 # Install additional tools (optional)
-go install github.com/uplang/tools/lsp@latest
+go install github.com/uplang/tools/language-server@latest
 go install github.com/uplang/tools/repl@latest
 go install github.com/uplang/tools/examples@latest
 ```
+
+### From Pre-built Binaries
+
+Download pre-built binaries from the [releases page](https://github.com/uplang/tools/releases).
+
+Each release includes binaries for:
+- **Linux**: amd64, arm64
+- **macOS**: amd64 (Intel), arm64 (Apple Silicon)
+- **Windows**: amd64, arm64
 
 ## Main Command: `up`
 
@@ -197,27 +223,30 @@ Test a release build without publishing:
 ```bash
 # Test UP CLI
 cd up
-goreleaser release --snapshot --clean
+go tool goreleaser release --snapshot --clean
 
 # Test examples runner
 cd ../examples
-goreleaser release --snapshot --clean
+go tool goreleaser release --snapshot --clean
 ```
 
 Artifacts will be in the `dist/` directory.
+
+**Note**: GoReleaser is included as a tool dependency in each module's `go.mod`, so it's automatically available via `go tool goreleaser`.
 
 ### Installation Methods
 
 After a release, users can install via:
 
 ```bash
+# Via Homebrew (recommended for macOS/Linux)
+brew install uplang/brew/up
+
 # Via go install
 go install github.com/uplang/tools/up@latest
+go install github.com/uplang/tools/language-server@latest
+go install github.com/uplang/tools/repl@latest
 go install github.com/uplang/tools/examples@latest
-
-# Via Homebrew (once tap is configured)
-brew install uplang/tap/up
-brew install uplang/tap/examples
 
 # Direct download from GitHub releases
 # https://github.com/uplang/tools/releases

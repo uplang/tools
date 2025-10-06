@@ -4,11 +4,33 @@ Command-line interface for parsing, formatting, and working with UP (Unified Pro
 
 ## Installation
 
-### From Go
+### Via Homebrew (macOS/Linux)
+
+```bash
+# Add the tap
+brew tap uplang/brew
+
+# Install up
+brew install uplang/brew/up
+
+# Or in one command
+brew install uplang/brew/up
+```
+
+### Via Go Install
 
 ```bash
 go install github.com/uplang/tools/up@latest
 ```
+
+### From Pre-built Binaries
+
+Download pre-built binaries from the [releases page](https://github.com/uplang/tools/releases).
+
+Available for:
+- Linux (amd64, arm64)
+- macOS (amd64/Intel, arm64/Apple Silicon)
+- Windows (amd64, arm64)
 
 ### From Source
 
