@@ -56,15 +56,16 @@ release:
     name: tools
   draft: false
   prerelease: auto
+  mode: keep-existing
   name_template: "Tool: up v{{.Version}}"
 
-homebrew_casks:
+brews:
   - name: up
     repository:
       owner: uplang
       name: brew
       token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
-    directory: Casks
+    directory: Formula
     homepage: https://github.com/uplang/tools
     description: "UP (Unified Properties) CLI tool - parse, format, validate, and work with UP documents"
     license: GPL-3.0

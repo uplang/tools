@@ -58,14 +58,22 @@ release:
     name: tools
   draft: false
   prerelease: auto
+  mode: keep-existing
   name_template: "Tool: examples v{{.Version}}"
 
-homebrew_casks:
-  - repository:
+brews:
+  - name: up-examples
+    repository:
       owner: uplang
-      name: homebrew-tap
-    directory: Casks
-    homepage: https://uplang.org
-    description: UP (Unified Properties) examples test runner
+      name: brew
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    directory: Formula
+    homepage: https://github.com/uplang/tools
+    description: "UP (Unified Properties) examples test runner"
     license: GPL-3.0
+    skip_upload: auto
+    commit_author:
+      name: goreleaserbot
+      email: bot@goreleaser.com
+    commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
 
